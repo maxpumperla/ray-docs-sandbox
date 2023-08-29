@@ -75,7 +75,7 @@ document.getElementById('searchBtn').addEventListener('click', function() {
         headers: {
             'Content-Type': 'application/json'
         },
-        data: JSON.stringify({body: searchTerm})
+        body: JSON.stringify({body: searchTerm})
     })
     .then(response => {
         console.log('Response:', response);
@@ -83,17 +83,16 @@ document.getElementById('searchBtn').addEventListener('click', function() {
     })
     .then(data => {
         console.log('Data:', data);
-        var resultDiv = document.getElementById('result');
         resultDiv.textContent = ''; // Clear previous result
 
         // Simulate streaming effect
-        var text = data.text;
+        var text = data["answer"];
         var i = 0;
         function typeWriter() {
             if (i < text.length) {
                 resultDiv.textContent += text.charAt(i);
                 i++;
-                setTimeout(typeWriter, 50);
+                setTimeout(typeWriter, 10);
             }
         }
         typeWriter();
