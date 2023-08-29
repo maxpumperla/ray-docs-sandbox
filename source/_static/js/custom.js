@@ -69,6 +69,9 @@ document.getElementById('searchBtn').addEventListener('click', function() {
     
     var searchTerm = searchBar.value;
 
+    resultDiv.textContent = ''; // Clear previous result
+    resultDiv.textContent = 'Processing your question... please wait a 10-15 seconds. Please note that the results of this bot are automated & may be incorrect or contain inappropriate information.'; 
+
     // Send POST request
     fetch('https://ray-qa-fb271b21669b.herokuapp.com/query', {
         method: 'POST',
@@ -83,7 +86,7 @@ document.getElementById('searchBtn').addEventListener('click', function() {
     })
     .then(data => {
         console.log('Data:', data);
-        resultDiv.textContent = ''; // Clear previous result
+        resultDiv.textContent = '';
 
         // Simulate streaming effect
         var text = data["answer"];
