@@ -1,4 +1,60 @@
+.container-xl.blurred {
+    filter: blur(5px);
+}
 
+.chat-widget {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: 1000;
+}
+
+.chat-popup {
+    display: none;
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -20%);
+    width: 50%;
+    height: 40%;
+    background-color: white;
+    border: 1px solid #000;
+    /* border-radius: 25px; */
+    z-index: 1001;
+}
+
+#openChatBtn {
+    background-color: #000;
+    color: #fff;
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#closeChatBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+}
+
+#closeChatBtn:hover {
+    cursor: pointer;
+    color: rgb(23, 35, 116);
+}
+
+
+/* .header {
+    width: 100%;
+} */
+
+/* %%%%%%%%%%%%%%%%%%% */
 
 .toctree-l1.has-children {
     font-weight: bold;
