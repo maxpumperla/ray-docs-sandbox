@@ -2,31 +2,12 @@
 var chatWidgetDiv = document.createElement("div");
 chatWidgetDiv.className = "chat-widget";
 
-
 // Create openChatBtn button
 var openChatBtn = document.createElement("button");
 openChatBtn.id = "openChatBtn";
 openChatBtn.innerHTML = "Ask AI";
 
-// Create SVG element
-var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-svg.setAttribute("width", "20");
-svg.setAttribute("height", "20");
-svg.setAttribute("viewBox", "0 0 10 10");
-
-// Create path element
-var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-path.setAttribute("d", "M1 7L5 3L9 7");
-path.setAttribute("stroke", "white");
-path.setAttribute("stroke-width", "2");
-svg.appendChild(path);
-
-// Append SVG to button
-openChatBtn.appendChild(svg);
-
 chatWidgetDiv.appendChild(openChatBtn);
-
-// Append created elements to the body
 document.body.appendChild(chatWidgetDiv);
 
 // Create chat-popup div
@@ -43,54 +24,53 @@ headerDiv.style.position = "relative";
 var closeChatBtn = document.createElement("button");
 closeChatBtn.id = "closeChatBtn";
 closeChatBtn.innerHTML = "x";
-chatPopupDiv.appendChild(closeChatBtn);
+headerDiv.appendChild(closeChatBtn);
+
 
 // Create search bar and button
-var searchForm = document.createElement("form");
-searchForm.className = "form-inline";
+var searchDiv = document.createElement("div");
 
 var searchBar = document.createElement("input");
 searchBar.type = "text";
-searchBar.className = "form-control";
 searchBar.placeholder = "Search";
 
 var searchBtn = document.createElement("button");
-searchBtn.type = "submit";
-searchBtn.className = "btn btn-primary ml-2";
-searchBtn.textContent = "Ask AI";
+searchBtn.id = "searchBtn";
+searchBtn.innerHTML = "Ask AI";
 
-searchForm.appendChild(searchBar);
-searchForm.appendChild(searchBtn);
+searchDiv.appendChild(searchBar);
+searchDiv.appendChild(searchBtn);
 
 
 var resultDiv = document.createElement("div");
 resultDiv.id = "result";
 
-// Append elements to chatPopupDiv
 chatPopupDiv.appendChild(headerDiv);
-chatPopupDiv.appendChild(searchForm);
+chatPopupDiv.appendChild(searchDiv);
 chatPopupDiv.appendChild(resultDiv);
-
 
 document.body.appendChild(chatPopupDiv);
 
 
 document.getElementById('openChatBtn').addEventListener('click', function() {
+    console.log("close");
     document.getElementById('chatPopup').style.display = 'block';
     document.querySelector('.container-xl').classList.add('blurred');
 });
 
 document.getElementById('closeChatBtn').addEventListener('click', function() {
+    console.log("close");
     document.getElementById('chatPopup').style.display = 'none';
     document.querySelector('.container-xl').classList.remove('blurred');
 });
 
-
-searchForm.addEventListener("submit", function(event) {
-    event.preventDefault();
-
+document.getElementById('searchBtn').addEventListener('click', function() {
+    console.log('Form submitted');
+    
     var searchTerm = searchBar.value;
-    console.log(searchTerm);
+    var resultDiv = document.getElementById('result');
+    resultDiv.textContent = ''; // Clear previous result
+    resultDiv.textContent = searchTerm;
 
     // Send POST request
     fetch('https://api.example.com/search', {
@@ -100,13 +80,15 @@ searchForm.addEventListener("submit", function(event) {
         },
         body: JSON.stringify({search: searchTerm})
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('Response:', response);
+        return response.json();
+    })
     .then(data => {
-        console.log("success")
+        console.log('Data:', data);
         var resultDiv = document.getElementById('result');
         resultDiv.textContent = ''; // Clear previous result
 
-                
         // Simulate streaming effect
         var text = data.text;
         var i = 0;
