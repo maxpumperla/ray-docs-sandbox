@@ -68,17 +68,14 @@ document.getElementById('searchBtn').addEventListener('click', function() {
     console.log('Form submitted');
     
     var searchTerm = searchBar.value;
-    var resultDiv = document.getElementById('result');
-    resultDiv.textContent = ''; // Clear previous result
-    resultDiv.textContent = searchTerm;
 
     // Send POST request
-    fetch('https://api.example.com/search', {
+    fetch('https://ray-qa-fb271b21669b.herokuapp.com/query', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({search: searchTerm})
+        data: JSON.stringify({body: searchTerm})
     })
     .then(response => {
         console.log('Response:', response);
