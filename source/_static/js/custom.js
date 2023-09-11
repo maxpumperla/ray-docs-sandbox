@@ -1,54 +1,26 @@
 // Create chat-widget div
 var chatWidgetDiv = document.createElement("div");
 chatWidgetDiv.className = "chat-widget";
-
-// Create openChatBtn button
-var openChatBtn = document.createElement("button");
-openChatBtn.id = "openChatBtn";
-openChatBtn.innerHTML = "Ask AI";
-
-chatWidgetDiv.appendChild(openChatBtn);
+chatWidgetDiv.innerHTML = `
+    <button id="openChatBtn">Ask AI</button>
+`
 document.body.appendChild(chatWidgetDiv);
 
 // Create chat-popup div
 var chatPopupDiv = document.createElement("div");
 chatPopupDiv.className = "chat-popup";
 chatPopupDiv.id = "chatPopup";
-
-var headerDiv = document.createElement("div");
-headerDiv.innerHTML = "Ray Docs AI - Ask a question"
-headerDiv.className = "header bg-light p-2";
-headerDiv.style.position = "relative";
-
-// Create closeChatBtn button
-var closeChatBtn = document.createElement("button");
-closeChatBtn.id = "closeChatBtn";
-closeChatBtn.innerHTML = "x";
-headerDiv.appendChild(closeChatBtn);
-
-
-// Create search bar and button
-var searchDiv = document.createElement("div");
-
-var searchBar = document.createElement("input");
-searchBar.type = "text";
-searchBar.placeholder = "Search";
-
-var searchBtn = document.createElement("button");
-searchBtn.id = "searchBtn";
-searchBtn.innerHTML = "Ask AI";
-
-searchDiv.appendChild(searchBar);
-searchDiv.appendChild(searchBtn);
-
-
-var resultDiv = document.createElement("div");
-resultDiv.id = "result";
-
-chatPopupDiv.appendChild(headerDiv);
-chatPopupDiv.appendChild(searchDiv);
-chatPopupDiv.appendChild(resultDiv);
-
+chatPopupDiv.innerHTML = `
+    <div class="chatHeader bg-light p-2">
+        Ray Docs AI - Ask a question
+        <button id="closeChatBtn">x</button>
+    </div>
+    <div>
+        <input type="text" placeholder="Search">
+        <button id="searchBtn">Ask AI</button>
+    </div>
+    <div id="result"></div>
+`
 document.body.appendChild(chatPopupDiv);
 
 
@@ -69,8 +41,12 @@ document.getElementById('searchBtn').addEventListener('click', function() {
     
     var searchTerm = searchBar.value;
 
+    var resultDiv = getElementById('result')
     resultDiv.textContent = ''; // Clear previous result
-    resultDiv.textContent = 'Processing your question... please wait 10-15 seconds. Please note that the results of this bot are automated & may be incorrect or contain inappropriate information.'; 
+    resultDiv.textContent = `
+        Processing your question... please wait 10-15 seconds.
+        Please note that the results of this bot are automated &
+        may be incorrect or contain inappropriate information.`; 
 
     // Send POST request
     fetch('https://ray-qa-fb271b21669b.herokuapp.com/query', {

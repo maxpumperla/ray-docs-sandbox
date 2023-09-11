@@ -50,6 +50,14 @@
 }
 
 
+.chatHeader {
+    position: relative;
+    background-color: lightgray; 
+    padding: 2px;
+}
+
+
+
 /* %%%%%%%%%%%%%%%%%%% */
 
 .toctree-l1.has-children {
