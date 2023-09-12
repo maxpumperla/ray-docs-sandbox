@@ -55,7 +55,7 @@ document.getElementById('searchBtn').addEventListener('click', function() {
     var searchTerm = searchBar.value;
 
     var resultDiv = document.getElementById('result')
-    resultDiv.textContent = ''; // Clear previous result
+    resultDiv.textContent = '';
     resultDiv.textContent = `
         Processing your question... please wait 10-15 seconds.
         Please note that the results of this bot are automated &
@@ -87,6 +87,10 @@ document.getElementById('searchBtn').addEventListener('click', function() {
                 setTimeout(typeWriter, 5);
             }
             else {
+                const html = marked.parse(text);
+                resultDiv.innerHTML = '';
+                resultDiv.innerHTML += html;
+                
                 resultDiv.innerText += "\n\nSources:\n\n"
                 const ul = document.createElement('ul');
                 const sources = data["sources"];
