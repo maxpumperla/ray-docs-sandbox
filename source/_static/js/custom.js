@@ -79,18 +79,19 @@ document.getElementById('searchBtn').addEventListener('click', function() {
 
         // Streaming effect
         var text = data["answer"];
+        var html = marked.parse(text);
+        html = DOMPurify.sanitize(html);
+
         var i = 0;
         function typeWriter() {
-            if (i < text.length) {
-                resultDiv.textContent += text.charAt(i);
+            if (i < html.length) {
+                if (i % 10 == 0){
+                    resultDiv.innerHTML = html.slice(0, i);
+                }
                 i++;
                 setTimeout(typeWriter, 5);
             }
-            else {
-                const html = marked.parse(text);
-                resultDiv.innerHTML = '';
-                resultDiv.innerHTML += html;
-                
+            else {                
                 resultDiv.innerText += "\n\nSources:\n\n"
                 const ul = document.createElement('ul');
                 const sources = data["sources"];
