@@ -48,64 +48,68 @@ document.getElementById('closeChatBtn').addEventListener('click', function() {
     document.querySelector('.container-xl').classList.remove('blurred');
 });
 
-document.getElementById('searchBtn').addEventListener('click', function() {
-    console.log('Form submitted');
+function rayqa(event) {
     
-    var searchBar = document.getElementById('searchBar')
-    var searchTerm = searchBar.value;
-
-    var resultDiv = document.getElementById('result')
-    resultDiv.textContent = '';
-    resultDiv.textContent = `
-        Processing your question... please wait 10-15 seconds.
-        Please note that the results of this bot are automated &
-        may be incorrect or contain inappropriate information.`; 
-
-    // Send POST request
-    fetch('https://ray-qa-fb271b21669b.herokuapp.com/query', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({body: searchTerm})
-    })
-    .then(response => {
-        console.log('Response:', response);
-        return response.json();
-    })
-    .then(data => {
-        console.log('Data:', data);
+    if (event.type === 'click' || event.type === 'keydown' && event.key === 'Enter'){
+        var searchBar = document.getElementById('searchBar')
+        var searchTerm = searchBar.value;
+    
+        var resultDiv = document.getElementById('result')
         resultDiv.textContent = '';
-
-        // Streaming effect
-        var text = data["answer"];
-        var html = marked.parse(text);
-        html = DOMPurify.sanitize(html);
-
-        var i = 0;
-        function typeWriter() {
-            if (i < html.length) {
-                if (i % 10 == 0){
-                    resultDiv.innerHTML = html.slice(0, i);
+        resultDiv.textContent = `
+            Processing your question... please wait 10-15 seconds.
+            Please note that the results of this bot are automated &
+            may be incorrect or contain inappropriate information.`; 
+    
+        // Send POST request
+        fetch('https://ray-qa-fb271b21669b.herokuapp.com/query', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({body: searchTerm})
+        })
+        .then(response => {
+            console.log('Response:', response);
+            return response.json();
+        })
+        .then(data => {
+            console.log('Data:', data);
+            resultDiv.textContent = '';
+    
+            // Streaming effect
+            var text = data["answer"];
+            var html = marked.parse(text);
+            html = DOMPurify.sanitize(html);
+    
+            var i = 0;
+            function typeWriter() {
+                if (i < html.length) {
+                    if (i % 10 == 0){
+                        resultDiv.innerHTML = html.slice(0, i);
+                    }
+                    i++;
+                    setTimeout(typeWriter, 5);
                 }
-                i++;
-                setTimeout(typeWriter, 5);
+                else {                
+                    // resultDiv.innerText += "\n\nSources:\n\n"
+                    const ul = document.createElement('ul');
+                    const sources = data["sources"];
+                    sources.forEach(item => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<a href="${item}" target="_blank">${item}</a>`;
+                        ul.appendChild(li);
+                    });
+                    resultDiv.appendChild(ul);
+                }
             }
-            else {                
-                resultDiv.innerText += "\n\nSources:\n\n"
-                const ul = document.createElement('ul');
-                const sources = data["sources"];
-                sources.forEach(item => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<a href="${item}" target="_blank">${item}</a>`;
-                    ul.appendChild(li);
-                });
-                resultDiv.appendChild(ul);
-            }
-        }
-        typeWriter();
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-});
+            typeWriter();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+};
+
+document.getElementById('searchBtn').addEventListener('click', rayqa);
+document.getElementById('searchBar').addEventListener('keydown', rayqa);
