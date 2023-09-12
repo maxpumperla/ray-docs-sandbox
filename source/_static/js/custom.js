@@ -48,6 +48,38 @@ document.getElementById('closeChatBtn').addEventListener('click', function() {
     document.querySelector('.container-xl').classList.remove('blurred');
 });
 
+marked.setOptions({
+    renderer: new marked.Renderer(),
+    highlight: function(code) {
+      return hljs.highlight('python', code).value;
+    },
+  });
+
+function sendFeedback(element, feedback) {
+    element.classList.add('active');
+
+    console.log(feedback)
+
+    setTimeout(() => {
+        element.classList.remove('active');
+        }, 300);
+
+}
+
+function showSpinner() {
+    let resultDiv = document.getElementById('result');
+  
+    var spinnerContainer = document.createElement('div');
+    spinnerContainer.id = 'spinnerContainer';
+    
+    var spinner = document.createElement('div');
+    spinner.className = 'spinner';
+    
+    spinnerContainer.appendChild(spinner);
+    resultDiv.appendChild(spinnerContainer);
+    resultDiv.appendChild(spinner);
+  }
+
 function rayqa(event) {
     
     if (event.type === 'click' || event.type === 'keydown' && event.key === 'Enter'){
@@ -59,7 +91,9 @@ function rayqa(event) {
         resultDiv.textContent = `
             Processing your question... please wait 10-15 seconds.
             Please note that the results of this bot are automated &
-            may be incorrect or contain inappropriate information.`; 
+            may be incorrect or contain inappropriate information.`;
+        
+        showSpinner();
     
         // Send POST request
         fetch('https://ray-qa-fb271b21669b.herokuapp.com/query', {
@@ -75,7 +109,8 @@ function rayqa(event) {
         })
         .then(data => {
             console.log('Data:', data);
-            resultDiv.textContent = '';
+
+            resultDiv.innerHTML = '';
     
             // Streaming effect
             var text = data["answer"];
@@ -86,13 +121,16 @@ function rayqa(event) {
             function typeWriter() {
                 if (i < html.length) {
                     if (i % 10 == 0){
-                        resultDiv.innerHTML = html.slice(0, i);
+                        resultDiv.innerHTML = html.slice(0, i+10);
+                        document.querySelectorAll('pre code').forEach((block) => {
+                            hljs.highlightBlock(block);
+                          });
                     }
                     i++;
                     setTimeout(typeWriter, 5);
                 }
-                else {                
-                    // resultDiv.innerText += "\n\nSources:\n\n"
+                else {
+                    resultDiv.innerHTML += "Sources:<br><br>"
                     const ul = document.createElement('ul');
                     const sources = data["sources"];
                     sources.forEach(item => {
@@ -100,7 +138,51 @@ function rayqa(event) {
                         li.innerHTML = `<a href="${item}" target="_blank">${item}</a>`;
                         ul.appendChild(li);
                     });
+                    
+                    // Add copy buttons
                     resultDiv.appendChild(ul);
+                    let preElements = resultDiv.querySelectorAll('pre');
+                    preElements.forEach((preElement, index) => {
+                        preElement.style.position = 'relative';
+
+                        let uniqueId = `button-id-${index}`;
+                        preElement.id = uniqueId;
+                      
+                        let copyButton = document.createElement('button');
+                        copyButton.className = 'copybtn o-tooltip--left';
+                        copyButton.setAttribute('data-tooltip', 'Copy');
+                        copyButton.setAttribute('data-clipboard-target', `#${uniqueId}`);
+                        copyButton.style.position = 'absolute';
+                        copyButton.style.top = '10px';
+                        copyButton.style.right = '10px';
+                        copyButton.style.opacity = 'inherit';
+                      
+                        let imgElement = document.createElement('img');
+                        imgElement.src = '../../_static/copy-button.svg'
+                        imgElement.alt = 'Copy to clipboard';
+                      
+                        copyButton.appendChild(imgElement);
+                        preElement.appendChild(copyButton);
+                    });
+
+                    // Creating span elements for the emojis
+                    let thumbsUp = document.createElement('span');
+                    let thumbsDown = document.createElement('span');
+
+                    // Setting the emojis textContent to thumbs up and thumbs down emojis
+                    thumbsUp.textContent = '👍';
+                    thumbsDown.textContent = '👎';
+
+                    thumbsUp.className = 'thumbs thumbs-up';
+                    thumbsDown.className = 'thumbs thumbs-down';
+
+                    // Appending the emojis to the resultDiv
+                    resultDiv.appendChild(thumbsUp);
+                    resultDiv.appendChild(thumbsDown);
+
+                    // Adding click event listeners to send feedback to the server
+                    thumbsUp.addEventListener('click', () => sendFeedback(thumbsUp, 'positive'));
+                    thumbsDown.addEventListener('click', () => sendFeedback(thumbsDown, 'negative'));
                 }
             }
             typeWriter();
