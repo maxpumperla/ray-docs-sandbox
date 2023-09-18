@@ -22,7 +22,7 @@ chatPopupDiv.innerHTML = `
     </div>
     <div class="chatContentContainer">
         <div class="input-group">
-            <input id="searchBar" type="text" class="form-control" placeholder="Do not include any personal data or confidential information.">
+            <textarea id="searchBar" class="input" rows="3" placeholder="Do not include any personal data or confidential information."></textarea>
             <div class="input-group-append">
                 <button id="searchBtn" class="btn btn-primary">Ask AI</button>
             </div>
@@ -206,7 +206,7 @@ function rayqa(event) {
     if (event.type === 'click' || event.type === 'keydown' && event.key === 'Enter'){    
         resultDiv.textContent = '';
         
-        if (searchTerm.includes("STREAM!")) {
+        if (true) {
 
             resultDiv.textContent = `
             Please note that the results of this bot are automated &
@@ -214,12 +214,17 @@ function rayqa(event) {
             
             async function readStream() {
                 try {
-                    const response = await fetch('https://ray-qa-fb271b21669b.herokuapp.com/stream', {
+                    // const response = await fetch('http://localhost:8000/stream', {
+                    // const response = await fetch('https://serve-session-fc9wnjv2l9sairumx877c4pd89.i.anyscaleuserdata.com/', {
+                    // https://dl6ztfw8u7.execute-api.us-west-2.amazonaws.com/test
+                    const response = await fetch('https://dl6ztfw8u7.execute-api.us-west-2.amazonaws.com/test', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            'Authorization': 'Bearer gK2qPcbs6X3PF_xN7ZTIchYc3feVAW159BrRuFigzI4',
+                            'Accept': 'application/json'
                         },
-                        body: JSON.stringify({body: searchTerm})
+                        body: JSON.stringify({query: searchTerm})
                     });
                     const reader = response.body.getReader();
                     let decoder = new TextDecoder('utf-8');
@@ -235,22 +240,12 @@ function rayqa(event) {
                         }
         
                         var chunk = decoder.decode(value, { stream: true });
-                        const data = JSON.parse(chunk);
-                        if (data.hasOwnProperty("answer")){
-                            const text = data["answer"];
-                            collectChunks += text
-                            var html = marked.parse(collectChunks);
-                            html = DOMPurify.sanitize(html);
-                            resultDiv.innerHTML = html;
-                            highlightCode();
-                        } else if (data.hasOwnProperty("sources")) {
-                            addSources(resultDiv, data);
-                            renderCopyButtons(resultDiv);
-                            addThumbsButtons(resultDiv);
-                        } else {
-                            break;
-                        }
-
+                        console.log(chunk)
+                        collectChunks += chunk;
+                        var html = marked.parse(collectChunks);
+                        html = DOMPurify.sanitize(html);
+                        resultDiv.innerHTML = html;
+                        highlightCode();
                     }
                 } catch (error) {
                     console.error('Fetch API failed:', error);

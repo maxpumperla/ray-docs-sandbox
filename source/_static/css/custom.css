@@ -15,7 +15,7 @@
     top: 20%;
     left: 50%;
     transform: translate(-50%, -20%);
-    width: 50%;
+    width: 70%;
     height: 70%;
     background-color: white;
     border: 1px solid #ccc;
@@ -87,7 +87,12 @@
 }
 
 #searchBtn {
-    margin-top: 10px;
+    margin-top: 0px;
+    margin-left: 10px;
+}
+
+textarea {
+  width:80%;
 }
 
 .thumbs {
