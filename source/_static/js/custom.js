@@ -217,11 +217,12 @@ function rayqa(event) {
                     // const response = await fetch('http://localhost:8000/stream', {
                     // const response = await fetch('https://serve-session-fc9wnjv2l9sairumx877c4pd89.i.anyscaleuserdata.com/', {
                     // https://dl6ztfw8u7.execute-api.us-west-2.amazonaws.com/test
-                    const response = await fetch('https://dl6ztfw8u7.execute-api.us-west-2.amazonaws.com/test', {
+                    const response = await fetch('https://ray-assistant-public-bxauk.cld-kvedzwag2qa8i5bj.s.anyscaleuserdata.com/stream', {
+                    // const response = await fetch('https://ray-assistant-prod-bxauk.cld-kvedzwag2qa8i5bj.s.anyscaleuserdata.com/stream', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': 'Bearer gK2qPcbs6X3PF_xN7ZTIchYc3feVAW159BrRuFigzI4',
+                            // 'Authorization': 'Bearer gK2qPcbs6X3PF_xN7ZTIchYc3feVAW159BrRuFigzI4',
                             'Accept': 'application/json'
                         },
                         body: JSON.stringify({query: searchTerm})
